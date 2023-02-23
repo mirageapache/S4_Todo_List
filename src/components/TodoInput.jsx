@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 const StyledAddTodoContainer = styled.div`
   min-height: 52px;
@@ -58,6 +59,7 @@ const StyledAddTodoActionContainer = styled.div`
     font-size: 13px;
     color: var(--major);
     padding-right: 5px;
+    cursor: pointer;
     display: none;
   }
 
@@ -67,15 +69,45 @@ const StyledAddTodoActionContainer = styled.div`
     }
   }
 `;
-const TodoInput = () => {
+const TodoInput = ({ inputValue, onChange, onKeyDone, onAddTodo }) => {
   return (
-    <StyledAddTodoContainer>
-      <StyledLabelIcon className="icon" htmlFor="add-todo-input" />
+    <StyledAddTodoContainer
+      className={clsx('', { active: inputValue.length > 0 })}
+    >
+      <StyledLabelIcon
+        className="icon"
+        htmlFor="add-todo-input"
+        onClick={() => {
+          onAddTodo?.();
+        }}
+      />
       <StyledInputContainer>
-        <input id="add-todo-input" type="text" placeholder="新增工作" />
+        <input
+          id="add-todo-input"
+          value={inputValue}
+          onChange={(e) => {
+            onChange?.(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onKeyDone?.();
+            }
+          }}
+          type="text"
+          placeholder="新增工作"
+        />
       </StyledInputContainer>
-      <StyledAddTodoActionContainer>
-        <button className="btn-reset">新增</button>
+      <StyledAddTodoActionContainer
+        className={clsx('', { active: inputValue.length > 0 })}
+      >
+        <button
+          className="btn-reset"
+          onClick={() => {
+            onAddTodo?.();
+          }}
+        >
+          新增
+        </button>
       </StyledAddTodoActionContainer>
     </StyledAddTodoContainer>
   );

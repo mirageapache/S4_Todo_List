@@ -1,4 +1,5 @@
 import { Footer, Header, TodoCollection, TodoInput } from 'components';
+import { useState } from 'react';
 
 const dummyTodos = [
   {
@@ -24,12 +25,42 @@ const dummyTodos = [
 ];
 
 const TodoPage = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [todos, setTodos] = useState(dummyTodos);
+
+  const handleInputChange = (value) => {
+    setInputValue(value);
+  };
+
+  const handleAddtodo = () => {
+    console.log('add function');
+    if (inputValue.length === 0) {
+      return;
+    }
+    setTodos((prevTodo) => {
+      return [
+        ...prevTodo,
+        {
+          id: Math.random() * 100,
+          title: inputValue,
+          isDone: false,
+        },
+      ];
+    });
+    setInputValue('');
+  };
+
   return (
     <div>
       TodoPage
       <Header />
-      <TodoInput />
-      <TodoCollection />
+      <TodoInput
+        inputValue={inputValue}
+        onChange={handleInputChange}
+        onAddTodo={handleAddtodo}
+        onKeyDone={handleAddtodo}
+      />
+      <TodoCollection todos={todos} />
       <Footer />
     </div>
   );
