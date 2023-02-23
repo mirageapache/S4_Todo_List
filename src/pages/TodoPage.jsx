@@ -25,8 +25,17 @@ const dummyTodos = [
 ];
 
 const TodoPage = () => {
+  // input的value
   const [inputValue, setInputValue] = useState('');
+  // todo list 的資料
   const [todos, setTodos] = useState(dummyTodos);
+
+  let counts = 0; //計算剩餘項目數
+  todos.map((todo) => {
+    return todo.isDone === false && counts++;
+  });
+  // 顯示剩餘項目數
+  const [count, setCount] = useState(counts);
 
   // Input輸入(資料變動)
   const handleInputChange = (value) => {
@@ -50,21 +59,28 @@ const TodoPage = () => {
       ];
     });
     setInputValue('');
+    setCount(count + 1);
   };
 
   // 修改Todo資料完成/未完成
-  const handleToggleDone = (id) => {
+  const handleToggleDone = ({ id, isDone }) => {
     setTodos((prevTodos) => {
       return prevTodos.map((todo) => {
         if (todo.id === id) {
           return {
             ...todo,
-            isDone: !todo.isDone,
+            isDone,
           };
         }
         return todo;
       });
     });
+
+    if (isDone) {
+      setCount(count - 1);
+    } else {
+      setCount(count + 1);
+    }
   };
 
   // 更動 Todo input 編輯狀態
@@ -91,6 +107,15 @@ const TodoPage = () => {
     });
   };
 
+  // 刪除 Todo 資料
+  const handleDelete = ({ id, isDone }) => {
+    setTodos((prevTodo) => {
+      return prevTodo.filter((todo) => todo.id !== id);
+    });
+
+    if (!isDone) setCount(count - 1);
+  };
+
   return (
     <div>
       TodoPage
@@ -106,8 +131,9 @@ const TodoPage = () => {
         onToggleDone={handleToggleDone}
         onChangeMode={handleChangeMode}
         onSave={handleTodoSave}
+        onDelete={handleDelete}
       />
-      <Footer />
+      <Footer count={count} />
     </div>
   );
 };
