@@ -30,7 +30,7 @@ npm start
 4.瀏覽網頁
 
 ```
-開啟瀏覽器並輸入http://localhost:3000，即可瀏覽網頁
+開啟瀏覽器並輸入http://localhost:3000/todo，即可瀏覽網頁
 ```
 
 5.終止程式
