@@ -123,7 +123,7 @@ const TodoItem = ({ todo, onSave, onDelete, onToggleDone, onChangeMode }) => {
         <span
           className="icon icon-checked"
           onClick={() => {
-            onToggleDone?.({ id: todo.id, isDone: !todo.isDone });
+            onToggleDone?.(todo.id);
           }}
         />
       </div>

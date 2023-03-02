@@ -2,7 +2,7 @@
   "todos": [
     {
       "title": "Learn react-router",
-      "isDone": true,
+      "isDone": false,
       "id": 1
     },
     {
@@ -11,8 +11,8 @@
       "id": 2
     },
     {
-      "title": "Learn to use context",
-      "isDone": true,
+      "title": "Learn to useContext",
+      "isDone": false,
       "id": 3
     },
     {
@@ -24,6 +24,11 @@
       "title": "Test Patch todo",
       "isDone": false,
       "id": 5
+    },
+    {
+      "title": "number seven todo",
+      "isDone": false,
+      "id": 7
     }
   ]
 }

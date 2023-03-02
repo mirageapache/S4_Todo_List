@@ -17,12 +17,11 @@ export const getTodos = async () => {
 // POST (建立Todo資料)
 export const createTodo = async (payload) => {
   // payload是要新增的參數
+  // 把{title、isDone}從"payload"解構出來
+  const { title, isDone } = payload;
   try {
-    //把{title、isDone}從"payload"解構出來
-    const { title, isDone } = payload;
     // 用post的方法，(參數1是路徑，參數2是要傳的值)
-    const res = axios.post(`${baseURL}/todos`, { title, isDone });
-
+    const res = await axios.post(`${baseURL}/todos`, { title, isDone });
     return res.data;
   } catch (error) {
     console.error('[Create Todo failed]: ', error);
@@ -30,7 +29,26 @@ export const createTodo = async (payload) => {
 };
 
 // PATCH (修改Todo資料)
-export const patchTodo = () => {};
+export const patchTodo = async (payload) => {
+  const { id, title, isDone } = payload;
+  try {
+    const res = await axios.patch(`${baseURL}/todos/${id}`, {
+      title,
+      isDone,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.error('[Patch Todo failed]: ', error);
+  }
+};
 
 // DELETE (刪除Todo資料)
-export const deleteTodo = () => {};
+export const deleteTodo = async (id) => {
+  try {
+    const res = await axios.delete(`${baseURL}/todos/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error('[Delete Todo failed]: ', error);
+  }
+};
