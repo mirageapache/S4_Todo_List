@@ -1,34 +1,27 @@
+import { getTodos } from 'api/todos';
 import { Footer, Header, TodoCollection, TodoInput } from 'components';
-import { useState } from 'react';
-
-const dummyTodos = [
-  {
-    title: 'Learn react-router',
-    isDone: true,
-    id: 1,
-  },
-  {
-    title: 'Learn to create custom hooks',
-    isDone: false,
-    id: 2,
-  },
-  {
-    title: 'Learn to use context',
-    isDone: true,
-    id: 3,
-  },
-  {
-    title: 'Learn to implement auth',
-    isDone: false,
-    id: 4,
-  },
-];
+import { useEffect, useState } from 'react';
 
 const TodoPage = () => {
   // input的value
   const [inputValue, setInputValue] = useState('');
   // todo list 的資料
-  const [todos, setTodos] = useState(dummyTodos);
+  const [todos, setTodos] = useState([]);
+
+  // 透過api 取得Todo 資料
+  useEffect(() => {
+    const getTodosAsync = async () => {
+      try {
+        // 呼叫getTodos api
+        const todos = await getTodos();
+        // 將資料set到 useState的 todos
+        setTodos(todos.map((todo) => ({ ...todo, isEdit: false })));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getTodosAsync();
+  }, []);
 
   let counts = 0; //計算剩餘項目數
   todos.map((todo) => {
