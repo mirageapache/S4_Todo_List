@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 const StyledFooter = styled.footer`
   display: flex;
@@ -32,10 +34,25 @@ const StyledButton = styled.button`
 `;
 
 const Footer = ({ count }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    // 登出提示訊息
+    Swal.fire({
+      position: 'top',
+      title: '已登出！',
+      timer: 1800,
+      icon: 'info',
+      showConfirmButton: false,
+    });
+    navigate('/login');
+  };
+
   return (
     <StyledFooter>
       <p>剩餘項目數： {count}</p> {/* 「未完成」的項目數 */}
-      <StyledButton>登出</StyledButton>
+      <StyledButton onClick={handleLogout}>登出</StyledButton>
     </StyledFooter>
   );
 };
