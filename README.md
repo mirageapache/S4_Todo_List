@@ -6,6 +6,8 @@
 ✅ 修改 todo item<br>
 ✅ 刪除 todo item<br>
 ✅ 剩餘項目計算<br>
+✅ 使用 json-server 及 axios 套件串接 API<br>
+✅ 註冊、登入、登出<br>
 
 ## 開始使用
 
@@ -24,13 +26,14 @@ npm install
 3.啟動程式
 
 ```
-npm start
+npm run dev-server //API Server
+npm start //Web APP
 ```
 
 4.瀏覽網頁
 
 ```
-開啟瀏覽器並輸入http://localhost:3000/todo，即可瀏覽網頁
+開啟瀏覽器並輸入http://localhost:3000/login，即可登入系統
 ```
 
 5.終止程式
