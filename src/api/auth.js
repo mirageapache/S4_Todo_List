@@ -26,3 +26,27 @@ export const login = async ({ username, password }) => {
     console.error(error);
   }
 };
+
+// Register Method
+export const register = async ({ username, email, password }) => {
+  try {
+    //用POST 串接api，並解構存到data 變數
+    const { data } = await axios.post(`${authURL}/register`, {
+      username,
+      email,
+      password,
+    });
+
+    // 將AuthToken 從data 解構
+    const { authToken } = data;
+
+    // 註冊成功，會回傳success及authToken
+    if (authToken) {
+      return { success: true, ...data };
+    }
+    // 註冊失敗，則回傳失敗訊息
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
