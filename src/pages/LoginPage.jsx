@@ -6,9 +6,9 @@ import {
 } from 'components/common/auth.styled';
 import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from 'api/auth.js';
+import { checkPermission, login } from 'api/auth.js';
 import Swal from 'sweetalert2';
 
 const LoginPage = () => {
@@ -16,7 +16,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  // Login function
+  // 登入 Login function
   const handleLogin = async () => {
     // 表單驗證
     if (username.length === 0) {
@@ -53,6 +53,26 @@ const LoginPage = () => {
       });
     }
   };
+
+  // 驗證登入狀態 Check AuthToken
+  useEffect(() => {
+    const checkTokenIsValid = async () => {
+      // 從localStorage取出authToken
+      const authToken = localStorage.getItem('authToken');
+      // 如果authToken是空值表示尚未登入，則停留在登入頁
+      if (!authToken) {
+        return;
+      }
+      // 透過checkPermission api確認authToken是否有效
+      const result = await checkPermission(authToken);
+      // 驗證成功導到todos頁面
+      if (result) {
+        navigate('/todos');
+      }
+    };
+
+    checkTokenIsValid();
+  }, [navigate]);
 
   return (
     <AuthContainer>

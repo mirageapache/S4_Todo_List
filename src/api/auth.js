@@ -50,3 +50,17 @@ export const register = async ({ username, email, password }) => {
     console.error(error);
   }
 };
+
+// Check Token Method
+export const checkPermission = async (authToken) => {
+  try {
+    // 在 JWT 實作機制中，須把 token 放在 HTTP Request「Header」裡，並使用 Authorization 的 Bearer 類型來攜帶 token。
+    // 注意字串間 'Bearer ' 和 authToken 之間需要加入空格。
+    const response = await axios.get(`${authURL}/test-token`, {
+      headers: { Authorization: 'Bearer ' + authToken },
+    });
+    return response.data.success;
+  } catch (error) {
+    console.error(error);
+  }
+};

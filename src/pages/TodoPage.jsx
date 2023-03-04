@@ -1,6 +1,8 @@
+import { checkPermission } from 'api/auth';
 import { getTodos, createTodo, patchTodo, deleteTodo } from 'api/todos';
 import { Footer, Header, TodoCollection, TodoInput } from 'components';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const TodoPage = () => {
   // input的value
@@ -9,6 +11,28 @@ const TodoPage = () => {
   const [todos, setTodos] = useState([]);
   // 顯示剩餘項目數
   const [count, setCount] = useState(0);
+  const navigate = useNavigate();
+
+  // 驗證登入 Check AuthToken
+  useEffect(() => {
+    const checkTokenIsValid = async () => {
+      // 從localStorage取出authToken
+      const authToken = localStorage.getItem('authToken');
+      // 如果authToken是空值表示尚未登入，則導至登入頁
+      if (!authToken) {
+        navigate('/login');
+      } else {
+        // 透過checkPermission api確認authToken是否有效
+        const result = await checkPermission(authToken);
+        // 驗證失敗導到login頁面
+        if (!result) {
+          navigate('/login');
+        }
+      }
+    };
+
+    checkTokenIsValid();
+  }, [navigate]);
 
   // 透過api 取得Todo 資料
   useEffect(() => {

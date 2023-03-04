@@ -6,15 +6,16 @@ import {
 } from 'components/common/auth.styled';
 import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { register } from 'api/auth.js';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { checkPermission, register } from 'api/auth.js';
 import Swal from 'sweetalert2';
 
 const SignUpPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   // Register function
   const handleRegister = async () => {
@@ -59,6 +60,26 @@ const SignUpPage = () => {
       });
     }
   };
+
+  // 驗證登入狀態 Check AuthToken
+  useEffect(() => {
+    const checkTokenIsValid = async () => {
+      // 從localStorage取出authToken
+      const authToken = localStorage.getItem('authToken');
+      // 如果authToken是空值表示尚未登入(or註冊)，則停留在註冊頁
+      if (!authToken) {
+        return;
+      }
+      // 透過checkPermission api確認authToken是否有效
+      const result = await checkPermission(authToken);
+      // 驗證成功導到todos頁面
+      if (result) {
+        navigate('/todos');
+      }
+    };
+
+    checkTokenIsValid();
+  }, [navigate]);
 
   return (
     <AuthContainer>
