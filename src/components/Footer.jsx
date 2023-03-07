@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'contexts/AuthContext';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
@@ -34,10 +34,10 @@ const StyledButton = styled.button`
 `;
 
 const Footer = ({ count }) => {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
+    logout();
     // 登出提示訊息
     Swal.fire({
       position: 'top',
@@ -46,7 +46,6 @@ const Footer = ({ count }) => {
       icon: 'info',
       showConfirmButton: false,
     });
-    navigate('/login');
   };
 
   return (

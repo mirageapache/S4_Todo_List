@@ -8,16 +8,18 @@ import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { checkPermission, register } from 'api/auth.js';
 import Swal from 'sweetalert2';
+import { useAuth } from 'contexts/AuthContext';
 
 const SignUpPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  // 透過useAuth 取得登入狀態及註冊api方法
+  const { register, isAuthenticated } = useAuth();
 
-  // Register function
+  //註冊 Register function
   const handleRegister = async () => {
     // 表單驗證
     if (username.length === 0) {
@@ -30,16 +32,14 @@ const SignUpPage = () => {
       return;
     }
 
-    // 呼叫 Register api
-    const { success, authToken } = await register({
+    // 透過AuthContext 呼叫 Register api
+    const { success } = await register({
       username,
       email,
       password,
     });
 
     if (success) {
-      //註冊成功，將authToken 存入localStorage
-      localStorage.setItem('authToken', authToken);
       // 註冊成功提示訊息
       Swal.fire({
         position: 'top',
@@ -50,7 +50,6 @@ const SignUpPage = () => {
       });
       return;
     } else {
-      // 註冊失敗提示訊息
       Swal.fire({
         position: 'top',
         title: '註冊失敗！',
@@ -63,23 +62,10 @@ const SignUpPage = () => {
 
   // 驗證登入狀態 Check AuthToken
   useEffect(() => {
-    const checkTokenIsValid = async () => {
-      // 從localStorage取出authToken
-      const authToken = localStorage.getItem('authToken');
-      // 如果authToken是空值表示尚未登入(or註冊)，則停留在註冊頁
-      if (!authToken) {
-        return;
-      }
-      // 透過checkPermission api確認authToken是否有效
-      const result = await checkPermission(authToken);
-      // 驗證成功導到todos頁面
-      if (result) {
-        navigate('/todos');
-      }
-    };
-
-    checkTokenIsValid();
-  }, [navigate]);
+    if (isAuthenticated) {
+      navigate('/todos');
+    }
+  }, [navigate, isAuthenticated]);
 
   return (
     <AuthContainer>

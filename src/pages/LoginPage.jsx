@@ -8,13 +8,15 @@ import { ACLogoIcon } from 'assets/images';
 import { AuthInput } from 'components';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { checkPermission, login } from 'api/auth.js';
 import Swal from 'sweetalert2';
+import { useAuth } from 'contexts/AuthContext';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  // 透過useAuth 取得登入狀態及登入api方法
+  const { login, isAuthenticated } = useAuth();
 
   // 登入 Login function
   const handleLogin = async () => {
@@ -26,12 +28,9 @@ const LoginPage = () => {
       return;
     }
 
-    // 呼叫 Loign api
-    const { success, authToken } = await login({ username, password });
-
+    // 透過AuthContext 呼叫 Loign api
+    const success = await login({ username, password });
     if (success) {
-      //登入成功，將authToken 存入localStorage
-      localStorage.setItem('authToken', authToken);
       // 登入成功提示訊息
       Swal.fire({
         position: 'top',
@@ -40,8 +39,6 @@ const LoginPage = () => {
         icon: 'success',
         showConfirmButton: false,
       });
-      // 頁面跳轉至todos
-      navigate('/todos');
       return;
     } else {
       Swal.fire({
@@ -56,23 +53,10 @@ const LoginPage = () => {
 
   // 驗證登入狀態 Check AuthToken
   useEffect(() => {
-    const checkTokenIsValid = async () => {
-      // 從localStorage取出authToken
-      const authToken = localStorage.getItem('authToken');
-      // 如果authToken是空值表示尚未登入，則停留在登入頁
-      if (!authToken) {
-        return;
-      }
-      // 透過checkPermission api確認authToken是否有效
-      const result = await checkPermission(authToken);
-      // 驗證成功導到todos頁面
-      if (result) {
-        navigate('/todos');
-      }
-    };
-
-    checkTokenIsValid();
-  }, [navigate]);
+    if (isAuthenticated) {
+      navigate('/todos');
+    }
+  }, [navigate, isAuthenticated]);
 
   return (
     <AuthContainer>
